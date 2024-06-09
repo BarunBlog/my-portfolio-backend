@@ -1,0 +1,40 @@
+services:
+  web:
+    build: .
+    container_name: my-portfolio
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - CLOUDINARY_URL=${CLOUDINARY_URL}
+    depends_on:
+      - dev-db
+  dev-db:
+    image: postgres:latest
+    container_name: my-portfolio-postgres
+    volumes:
+      - postgres-db:/data/postgres
+    restart: unless-stopped
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - default
+
+networks:
+  default:
+
+volumes:
+  postgres-db:
