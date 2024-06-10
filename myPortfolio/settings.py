@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 import environ
+import dj_database_url
 from pathlib import Path
 
 env = environ.Env(
@@ -18,22 +19,25 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
+ENVIRONMENT = os.environ.get('ENVIRONMENT', default='development')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# read env file only in development
+if ENVIRONMENT == 'development':
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # False if not in os.environ because of casting above
-DEBUG = env('DEBUG')
+DEBUG = env('DEBUG', default=False)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default="unsafe-secret-key")
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "BarunBhattacharjee.pythonanywhere.com"]
 
 
 # Application definition
@@ -93,14 +97,7 @@ WSGI_APPLICATION = 'myPortfolio.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
+    'default': env.db(),
 }
 
 
@@ -146,6 +143,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# location of static files for production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -155,7 +155,30 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Cloudinary settings
-CLOUDINARY_URL = env('CLOUDINARY_URL')
+# security settings
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True  # To help guard against XSS attacks
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_SSL_REDIRECT = True
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # web browsers should only interact via HTTPS
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # otherwise the site may still be vulnerable via an insecure connection to a subdomain.
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    # dj-database-url
+    db_from_env = dj_database_url.config(conn_max_age=500)  # Returns configured DATABASE dictionary from DATABASE_URL
+    DATABASES['default'].update(db_from_env)
+
+    # For handling media files
+    CLOUDINARY_URL = env('CLOUDINARY_URL')
+
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+    #  for sending files to web clients
+    SENDFILE_BACKEND = 'sendfile.backends.simple'
