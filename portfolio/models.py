@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 # from .validators import validate_video_file_extension
 from cloudinary_storage.storage import VideoMediaCloudinaryStorage
 from tinymce.models import HTMLField
@@ -17,7 +16,7 @@ class Project(models.Model):
     name = models.CharField(max_length=200)
     small_description = models.CharField(max_length=50)
     description = HTMLField()
-    technologies_used = ArrayField(models.CharField(max_length=100), blank=True)
+    technologies_used = models.CharField(max_length=500, blank=True)
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPE_CHOICES)
     url = models.URLField(max_length=200, null=True, blank=True)
     repository_url = models.URLField(max_length=200, null=True, blank=True)
