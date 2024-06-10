@@ -20,12 +20,16 @@ class ProjectListSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
+    technologies_used = serializers.SerializerMethodField()
     project_images = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         fields = ['uuid', 'name', 'small_description', 'description', 'technologies_used', 'project_type', 'url',
                   'repository_url', 'video', 'start_date', 'end_date', 'project_images', 'conclusion']
+
+    def get_technologies_used(self, obj):
+        return obj.technologies_used.split(',')
 
     def get_project_images(self, obj):
         request = self.context.get('request')
