@@ -155,6 +155,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+CLOUDINARY = {
+  'cloud_name': env('CLOUD_NAME'),
+  'api_key': env('API_KEY'),
+  'api_secret': env('API_SECRET'),
+  'api_proxy': 'http://proxy.server:3128'
+}
+
+# For handling media files
+CLOUDINARY_URL = env('CLOUDINARY_URL')
+
 # security settings
 if ENVIRONMENT == 'production':
     SECURE_BROWSER_XSS_FILTER = True  # To help guard against XSS attacks
@@ -174,9 +184,6 @@ if ENVIRONMENT == 'production':
     # dj-database-url
     db_from_env = dj_database_url.config(conn_max_age=500)  # Returns configured DATABASE dictionary from DATABASE_URL
     DATABASES['default'].update(db_from_env)
-
-    # For handling media files
-    CLOUDINARY_URL = env('CLOUDINARY_URL')
 
     #  for sending files to web clients
     SENDFILE_BACKEND = 'sendfile.backends.simple'
