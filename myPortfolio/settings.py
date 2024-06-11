@@ -153,6 +153,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 # security settings
 if ENVIRONMENT == 'production':
     SECURE_BROWSER_XSS_FILTER = True  # To help guard against XSS attacks
@@ -175,8 +177,6 @@ if ENVIRONMENT == 'production':
 
     # For handling media files
     CLOUDINARY_URL = env('CLOUDINARY_URL')
-
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
     #  for sending files to web clients
     SENDFILE_BACKEND = 'sendfile.backends.simple'
