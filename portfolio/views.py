@@ -4,7 +4,7 @@ from .serializers import ProjectListSerializer, ProjectDetailSerializer
 
 
 class ProjectList(generics.ListAPIView):
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().order_by('-start_date')
     serializer_class = ProjectListSerializer
 
     def get_serializer_context(self):
