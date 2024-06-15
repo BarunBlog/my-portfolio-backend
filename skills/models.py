@@ -12,6 +12,7 @@ SKILL_TYPE_CHOICES = (
     ("Programming Language", "Programming Language"),
     ("Backend", "Backend Technologies"),
     ("Frontend", "Frontend Technologies"),
+    ("Database", "Database"),
     ("DevOps & Deployment", "DevOps and Deployment"),
     ("Messaging & Task Queues", "Messaging and Task Queues"),
     ("Testing", "Testing"),
