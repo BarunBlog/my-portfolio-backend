@@ -156,7 +156,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    '*'
+    "https://barun-bhattacharjee.web.app",
+    "https://barun-bhattacharjee.firebaseapp.com",
+    "http://localhost:3000",
 ]
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
